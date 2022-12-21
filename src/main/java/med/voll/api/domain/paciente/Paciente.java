@@ -1,43 +1,34 @@
-package med.voll.api.medico;
+package med.voll.api.domain.paciente;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import med.voll.api.endereco.Endereco;
+import med.voll.api.domain.endereco.Endereco;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
-@Table(name = "medicos")
-@Entity(name = "Medico")
+@Table(name = "pacientes")
+@Entity(name = "Paciente")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Medico {
+public class Paciente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String email;
-    private String crm;
-    private String telefone;
     private Boolean ativo;
-
-    @Enumerated(EnumType.STRING)
-    private Especialidade especialidade;
-
     @Embedded
     private Endereco endereco;
 
 
-    public Medico(DadosCadastroMedico dados) {
+    public Paciente(DadosCadastroPaciente dados) {
         this.nome = dados.nome();
         this.email = dados.email();
-        this.crm = dados.crm();
-        this.telefone = dados.telefone();
-        this.especialidade = dados.especialidade();
         this.endereco = new Endereco(dados.endereco());
         this.ativo = true;
     }
@@ -46,8 +37,8 @@ public class Medico {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Medico medico = (Medico) o;
-        return id != null && Objects.equals(id, medico.id);
+        Paciente paciente = (Paciente) o;
+        return id != null && Objects.equals(id, paciente.id);
     }
 
     @Override
@@ -55,13 +46,11 @@ public class Medico {
         return getClass().hashCode();
     }
 
-    public void atualizarInformacoes(DadosAtualizacaoMedico dados) {
+    public void atualizar(DadosAtualizacaoPaciente dados) {
         if (dados.nome() != null)
             this.nome = dados.nome();
-        if (dados.telefone() != null)
-            this.telefone = dados.telefone();
-        if (dados.dadosEndereco() != null)
-            this.endereco.atualizar(dados.dadosEndereco());
+        if (dados.email() != null)
+            this.email = dados.email();
     }
 
     public void inativar() {
